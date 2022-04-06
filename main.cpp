@@ -1,6 +1,15 @@
 #include <iostream>
 #include <vector>
 
+bool check (int y, int x) {
+    if ((y == 0 || y == 1 || y == 2) &&
+        (x == 0 || x == 1 || x == 2)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 int main() {
     char XO[3][3] = {{'.', '.', '.'},
                      {'.', '.', '.'},
@@ -9,6 +18,7 @@ int main() {
     int x; // координата строки
     int count = 9; // общее количество ходов
     bool endgame = false;
+    std::string X_or_O = "";
     std::string total = "";
 
     for (int i = 0; i < 3; i++) {
@@ -19,29 +29,42 @@ int main() {
     } // изначальная отрисовка поля
 
     while (!endgame) {
-        std::cout << "Enter coordinates for X: " << std::endl;
+
+        if (count % 2 != 0) {
+            X_or_O = 'X';
+        } else {
+            X_or_O = 'O';
+        }
+
+        std::cout << "Enter coordinates for " << X_or_O << ": " << std::endl;
         std::cin >> y >> x;
-            while (XO[y][x] != '.') {
-                std::cout << "This point is occupied, enter other coordinates!" << std::endl;
-                std::cout << "Enter coordinates for X: " << std::endl;
+            while (!check(y, x)){
+                std::cout << "Incorrect coordinates X & Y can't be more than 2 and less than 0!" << std::endl;
+                std::cout << "Enter coordinates for " << X_or_O << ": " << std::endl;
                 std::cin >> y >> x;
             }
-        XO[y][x] = 'X';
+            while (XO[y][x] != '.') {
+                std::cout << "This point is occupied, enter other coordinates!" << std::endl;
+                std::cout << "Enter coordinates for " << X_or_O << ": " << std::endl;
+                std::cin >> y >> x;
+            }
+        XO[y][x] = X_or_O[0];
         count -= 1;
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (XO[i][0] == X_or_O[0] && XO[i][1] == X_or_O[0] && XO[i][2] == X_or_O[0] ||
+                    XO[0][j] == X_or_O[0] && XO[1][j] == X_or_O[0] && XO[2][j] == X_or_O[0]) {
+                    total = X_or_O + " - win!";
+                    endgame = true;
+                }
+            }
+        } // высчитывает победу
+
         if (count == 0) {
             total = "Nobody!";
             endgame = true;
         } // определяет ничью
-
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (XO[i][0] == 'X' && XO[i][1] == 'X' && XO[i][2] == 'X' ||
-                    XO[0][j] == 'X' && XO[1][j] == 'X' && XO[2][j] == 'X') {
-                    total = "X - win!";
-                    endgame = true;
-                }
-            }
-        } // высчитывает победу Х
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -50,42 +73,7 @@ int main() {
             std::cout << std::endl;
         }
 
-        if (endgame) {
-            break;
-        } // дополнительная проверка на выход из основного while
-        else {
-            std::cout << "Enter coordinates for O: " << std::endl;
-            std::cin >> y >> x;
-            while (XO[y][x] != '.') {
-                std::cout << "This point is occupied, enter other coordinates!" << std::endl;
-                std::cout << "Enter coordinates for O: " << std::endl;
-                std::cin >> y >> x;
-            }
-            XO[y][x] = 'O';
-            count -= 1;
-            if (count == 0) {
-                total = "Nobody!";
-                endgame = true;
-            } // определяет ничью
-
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    if (XO[i][0] == 'O' && XO[i][1] == 'O' && XO[i][2] == 'O' ||
-                        XO[0][j] == 'O' && XO[1][j] == 'O' && XO[2][j] == 'O') {
-                        total = "O - win!";
-                        endgame = true;
-                    }
-                }
-            } // высчитывает победу O
-
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
-                    std::cout << XO[i][j] << " ";
-                }
-                std::cout << std::endl;
-            }
-        }
-        }
+    }
 
     std::cout << std::endl << total;
     return 0;
