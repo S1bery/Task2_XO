@@ -2,8 +2,7 @@
 #include <vector>
 
 bool check (int y, int x) {
-    if ((y == 0 || y == 1 || y == 2) &&
-        (x == 0 || x == 1 || x == 2)) {
+    if ((y >= 0 && y <= 2) && (x >= 0 && x <= 2)) {
         return true;
     } else {
         return false;
@@ -38,13 +37,8 @@ int main() {
 
         std::cout << "Enter coordinates for " << X_or_O << ": " << std::endl;
         std::cin >> y >> x;
-            while (!check(y, x)){
-                std::cout << "Incorrect coordinates X & Y can't be more than 2 and less than 0!" << std::endl;
-                std::cout << "Enter coordinates for " << X_or_O << ": " << std::endl;
-                std::cin >> y >> x;
-            }
-            while (XO[y][x] != '.') {
-                std::cout << "This point is occupied, enter other coordinates!" << std::endl;
+            while (!check(y, x) && XO[y][x] != '.'){
+                std::cout << "Incorrect coordinates!" << std::endl;
                 std::cout << "Enter coordinates for " << X_or_O << ": " << std::endl;
                 std::cin >> y >> x;
             }
