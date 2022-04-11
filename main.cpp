@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <limits>
 
 bool check (int y, int x) {
     if ((y >= 0 && y <= 2) && (x >= 0 && x <= 2)) {
@@ -7,6 +8,10 @@ bool check (int y, int x) {
     } else {
         return false;
     }
+}
+
+void ignoreLine () {
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
 int main() {
@@ -17,7 +22,7 @@ int main() {
     int x; // координата строки
     int count = 9; // общее количество ходов
     bool endgame = false;
-    std::string X_or_O = "";
+    char X_or_O = ' ';
     std::string total = "";
 
     for (int i = 0; i < 3; i++) {
@@ -37,19 +42,26 @@ int main() {
 
         std::cout << "Enter coordinates for " << X_or_O << ": " << std::endl;
         std::cin >> y >> x;
-            while (!check(y, x) && XO[y][x] != '.'){
-                std::cout << "Incorrect coordinates!" << std::endl;
-                std::cout << "Enter coordinates for " << X_or_O << ": " << std::endl;
-                std::cin >> y >> x;
+        while (std::cin.fail() || !check(y, x) || XO[y][x] != '.'){
+            std::cin.clear();
+            ignoreLine ();
+            std::cout << "Incorrect coordinates!" << std::endl;
+            std::cout << "Enter coordinates for " << X_or_O << ": " << std::endl;
+            if (std::cin.fail()) {
+                std::cin.clear();
+                ignoreLine ();
             }
-        XO[y][x] = X_or_O[0];
+            std::cin >> y >> x;
+        }
+        XO[y][x] = X_or_O;
         count -= 1;
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (XO[i][0] == X_or_O[0] && XO[i][1] == X_or_O[0] && XO[i][2] == X_or_O[0] ||
-                    XO[0][j] == X_or_O[0] && XO[1][j] == X_or_O[0] && XO[2][j] == X_or_O[0]) {
-                    total = X_or_O + " - win!";
+                if (XO[i][0] == X_or_O && XO[i][1] == X_or_O && XO[i][2] == X_or_O ||
+                    XO[0][j] == X_or_O && XO[1][j] == X_or_O && XO[2][j] == X_or_O) {
+                    total = " - win!";
+                    total = X_or_O + total;
                     endgame = true;
                 }
             }
@@ -68,7 +80,6 @@ int main() {
         }
 
     }
-
     std::cout << std::endl << total;
     return 0;
 }
